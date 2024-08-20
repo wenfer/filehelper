@@ -1,7 +1,8 @@
 name: "test"
+dirs:
+  - "${HOME}/Downloads"
 rules:
   - name: "movie"
-    dir: "${HOME}/Downloads"
     move_to: "${HOME}/Movie"
     extensions:
       - ".mp4"
