@@ -3,7 +3,17 @@ dirs:
   - "${HOME}/Downloads"
 rules:
   - name: "movie"
-    move_to: "${HOME}/Movie"
+    move_to: "${HOME}/Videos"
+    rm_dir: true
     extensions:
       - ".mp4"
       - ".mkv"
+    regulars:
+      - ".*\.mp4"
+    rename:
+      trim: false
+      add: "已打标"
+      remove: "电影"
+      replace:
+        ori: " "
+        new: " "
