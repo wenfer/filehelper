@@ -3,7 +3,7 @@
 > 自动监听目标文件，并对文件按照配置的规则进行移动归类
 
 #### 演示规则文件
-> config.yaml
+config.yaml
 ```yaml
 name: "test"
 dirs: # 监听目录
@@ -24,4 +24,16 @@ rules:
       - ori: "电影天堂" # 这里可以写正则
         new: "" # 匹配到的字符串会被替换为这个字段
     overwrite: false # 覆盖同名文件，false则递增文件名
+```
+
+#### 打包（pyinstaller）
+```shell
+pip install pyinstaller
+pyinstaller -F main.spec
+```
+
+#### 运行
+可执行文件同目录下放一个config.yaml文件
+```shell
+./filehelper
 ```
