@@ -6,6 +6,7 @@ import io
 import os
 import re
 import shutil
+import sys
 from pathlib import Path
 from yaml import load, Loader
 
@@ -110,7 +111,7 @@ class Watcher:
     startup: bool
 
     def __init__(self):
-        stream = io.open("config.yaml", "r")
+        stream = io.open(yaml_path, "r")
         config = load(stream, Loader)
         self.name = config.get("name", "no name")
         self.startup = config.get("startup", False)
@@ -160,4 +161,8 @@ class Watcher:
 
 
 if __name__ == '__main__':
+    if len(sys.argv) == 1:
+        yaml_path = "config.yaml"
+    else:
+        yaml_path = sys.argv[1]
     Watcher().start()
