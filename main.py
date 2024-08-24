@@ -18,13 +18,13 @@ class Rule:
     rm_dir_if_empty: bool
     recursion: bool
     move_to: str
-    extensions: list
+    suffixes: list
     regulars: list
     rename: list
 
     def __init__(self, rule, base):
         self.move_to = os.path.expandvars(rule.get('move_to'))
-        self.extensions = rule.get('extensions')
+        self.suffixes = rule.get('suffixes')
         self.name = rule.get('name')
         self.rm_dir_if_empty = rule.get('rm_dir_if_empty')
         self.rm_ignore = rule.get('rm_ignore')
@@ -37,6 +37,7 @@ class Rule:
 
     def handle(self, path):
         if self.__match(path):
+            print("matched")
             self.__move(path, self.__rename(path.name))
 
     def __rm_ignore_match(self, name):
@@ -73,10 +74,10 @@ class Rule:
         shutil.move(path, new_path)
         self.__rm_dir(path)
 
-    def __match_extensions(self, path):
-        if self.extensions is None:
+    def __match_suffixes(self, path):
+        if self.suffixes is None:
             return True
-        for ext in self.extensions:
+        for ext in self.suffixes:
             if path.is_file():
                 if path.suffix == ext:
                     return True
@@ -99,18 +100,20 @@ class Rule:
         return new_name
 
     def __match(self, path):
-        return self.__match_extensions(path) and self.__match_regulars(path)
+        return self.__match_suffixes(path) and self.__match_regulars(path)
 
 
 class Watcher:
     name: str
     dirs: list = []
     rules: list
+    startup: bool
 
     def __init__(self):
         stream = io.open("config.yaml", "r")
         config = load(stream, Loader)
-        self.name = config.get("name")
+        self.name = config.get("name", "no name")
+        self.startup = config.get("startup", False)
         dirs = config.get("dirs")
         if len(dirs) == 0:
             raise Exception("未配置目录")
@@ -126,10 +129,22 @@ class Watcher:
         for rule in self.rules:
             rule.handle(path)
 
-    def start(self, startup):
-        if startup:
-            for path in self.dirs:
-                print("1")
+    def __scan_dir(self, directory):
+        scandir = os.scandir(directory)
+        for f in scandir:
+            path = Path(f)
+            if path.is_dir():
+                self.__scan_dir(path)
+            else:
+                self.__handle_rule(path)
+
+    def start(self):
+        if self.startup:
+            print("配置了startup，立即开始扫描目录")
+            for d in self.dirs:
+                print(f"正在扫描目录 {d}")
+                self.__scan_dir(Path(d))
+        print("立即处理逻辑结束，开始监听目录")
         with INotify() as inotify:
             for path in self.dirs:
                 inotify.add_watch_recursive(path, flags.CREATE)
@@ -145,4 +160,4 @@ class Watcher:
 
 
 if __name__ == '__main__':
-    Watcher().start(1)
+    Watcher().start()

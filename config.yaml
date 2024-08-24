@@ -1,6 +1,7 @@
 name: "test"
 dirs:
-  - "${HOME}/Documents"
+  - "${HOME}/Pictures"
+startup: true
 rules:
   - name: "movie"
     move_to: "${HOME}/Videos"
@@ -8,7 +9,7 @@ rules:
     rm_ignore: # 删除目录判空时，忽略名称包含以下字符的文件或文件夹
       - ".torrent"
     recursion: false
-    extensions:  # 后缀名匹配
+    suffixes:  # 后缀名匹配
       - ".mp4"
       - ".mkv"
     regulars: # 正则匹配
