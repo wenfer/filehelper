@@ -30,3 +30,11 @@ jobs:
     - name: pyinstaller
       run: |
         pyinstaller filehelper.spec
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      with:
+        token: ${{ secrets.ACTION_SECRET }}
+        body_path: ./CHANGELOG.md
+        files: |
+          ./dist/**
+          ./CHANGELOG.md
