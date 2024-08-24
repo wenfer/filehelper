@@ -11,14 +11,7 @@ from errno import EINTR
 from termios import FIONREAD
 from fcntl import ioctl
 from io import FileIO
-
-PY2 = version_info.major < 3
-if PY2:
-    fsencode = lambda s: s if isinstance(s, str) else s.encode(getfilesystemencoding())
-    # In 32-bit Python < 3 the inotify constants don't fit in an IntEnum:
-    IntEnum = type('IntEnum', (long, Enum), {})
-else:
-    from os import fsencode, fsdecode
+from os import fsencode, fsdecode
 
 __version__ = '1.3.5'
 
