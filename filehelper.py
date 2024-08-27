@@ -1,6 +1,5 @@
 """
-文件监控助手
-new Env('文件监控助手');
+name: 文件监控助手
 cron: 1 * * * * ?
 
 环境变量 CONFIG_PATH  为自定义的config.yml路径
