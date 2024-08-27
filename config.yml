@@ -1,0 +1,22 @@
+name: "test"
+dirs:
+  - "/home/qiuyuan/Downloads"
+rules:
+  - name: "movie"
+    move_to: "/home/qiuyuan/Music"
+    extract_from_dir: true #从文件夹中提取文件
+    rm_dir_if_empty: true #如果所在目录为空，则删除该目录
+    rm_ignore: # 删除目录判空时，忽略名称包含以下字符的文件或文件夹
+      - ".torrent"
+    suffixes:  # 后缀名匹配
+      - ".mp4"
+      - ".mkv"
+    regulars: # 正则匹配
+      - '【[\u4e00-\u9fa5|a-zA-Z|0-9]+[\s]+(www\.)?[[a-z|A-Z|0-9]+\.]?(com|cn|net|org)】'
+      - '\[?[\u4e00-\u9fa5a-zA-Z0-9]+电影[a-z]+\.?[a-z|0-9]+\.?(org|com|cn)\]?'
+    rename: # 重命名规则（正则）
+      - ori: '【[\u4e00-\u9fa5|a-zA-Z|0-9]+[\s]+(www\.)?[[a-z|A-Z|0-9]+\.]?(com|cn|net|org)】'
+        new: ""
+      - ori: '\[?[\u4e00-\u9fa5a-zA-Z0-9]+电影[a-z]+\.?[a-z|0-9]+\.?(org|com|cn)\]?'
+        new: ""
+    overwrite: true # 覆盖同名文件，false则递增文件名

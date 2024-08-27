@@ -32,5 +32,6 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         token: ${{ secrets.ACTION_SECRET }}
+        generate_release_notes: true
         files: |
           ./dist/**
