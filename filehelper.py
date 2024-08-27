@@ -1,7 +1,9 @@
 """
 文件监控助手
-new Env('filehelper');
+new Env('文件监控助手');
 cron: 1 * * * * ?
+
+环境变量 CONFIG_PATH  为自定义的config.yml路径
 
 """
 import io
@@ -125,8 +127,5 @@ class FileHelper:
 
 
 if __name__ == '__main__':
-    if len(sys.argv) == 1:
-        yaml_path = "config.yml"
-    else:
-        yaml_path = sys.argv[1]
+    yaml_path = os.environ['CONFIG_PATH']
     FileHelper().start()
