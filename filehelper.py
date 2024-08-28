@@ -34,8 +34,11 @@ class Rule:
 
     def handle(self, path):
         if self.__match(path):
-            print("matched")
-            self.__move(path, self.__rename(path.name))
+            new_path = self.__rename(path.name)
+            print(f"正在将{path}  移动到  {new_path}  ")
+            self.__move(path, new_path)
+            return True
+        return False
 
     def __move(self, path, new_name):
         if self.move_to is None:
@@ -86,7 +89,8 @@ class FileHelper:
     name: str
     dirs: list = []
     rules: list
-    startup: bool
+    rm_suffixes: list
+    rm_dir_if_empty: bool
 
     def __init__(self):
         stream = io.open(yaml_path, "r")
@@ -106,25 +110,45 @@ class FileHelper:
 
     def __handle_rule(self, path):
         for rule in self.rules:
-            rule.handle(path)
+            if rule.handle(path):
+                return True
+        return False
+
+    def __rm_suffixes(self, path):
+        for ignore in self.rm_suffixes:
+            if path.suffix == ignore:
+                print(f"{path}  删除")
+                shutil.rmtree(path)
+                return True
+        return False
 
     def __scan_dir(self, directory):
+        moved = 0
+        total = 0
         scandir = os.scandir(directory)
         for f in scandir:
             path = Path(f)
+            total += 1
             if path.is_dir():
-                self.__scan_dir(path)
+                moved += self.__scan_dir(path)
             else:
-                self.__handle_rule(path)
+                if self.__rm_suffixes(path) or self.__handle_rule(path):
+                    moved += 1
+        if self.rm_dir_if_empty and moved == total:
+            print(f"目录 {directory}  下文件已全部移动，删除此目录")
+            shutil.rmtree(directory)
+            moved += 1
+        return moved
 
     def start(self):
         print("开始扫描目录")
+        moved = 0
         for d in self.dirs:
             print(f"正在扫描目录 {d}")
-            self.__scan_dir(Path(d))
-        print("立即处理逻辑结束，开始监听目录")
+            moved += self.__scan_dir(Path(d))
+        print(f"本次任务一共移动了{moved}个文件")
 
 
 if __name__ == '__main__':
-    yaml_path = os.environ['CONFIG_PATH']
+    yaml_path = os.environ.get("CONFIG_PATH", "config.yml")
     FileHelper().start()
