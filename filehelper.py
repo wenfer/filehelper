@@ -68,7 +68,6 @@ class Rule:
         if self.regulars is None:
             return True
         for regular in self.regulars:
-            print(regular)
             if re.search(regular, path.name):
                 return True
         return False
@@ -97,6 +96,8 @@ class FileHelper:
         config = load(stream, Loader)
         self.name = config.get("name", "no name")
         self.startup = config.get("startup", False)
+        self.rm_dir_if_empty = config.get("rm_dir_if_empty", False)
+        self.rm_suffixes = config.get("rm_suffixes", [])
         dirs = config.get("dirs")
         if len(dirs) == 0:
             raise Exception("未配置目录")
@@ -118,7 +119,10 @@ class FileHelper:
         for ignore in self.rm_suffixes:
             if path.suffix == ignore:
                 print(f"{path}  删除")
-                shutil.rmtree(path)
+                try:
+                    os.remove(path)
+                except OSError as e:
+                    print(f"删除失败 {e}")
                 return True
         return False
 

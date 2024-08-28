@@ -12,7 +12,7 @@ rules:
       - ".mp4"
       - ".mkv"
     regulars: # 正则匹配
-      - '【[\u4e00-\u9fa5|a-zA-Z|0-9]+[\s]+(www\.)?[[a-z|A-Z|0-9]+\.]?(com|cn|net|org)】'
+      - '【[\u4e00-\u9fa5|a-zA-Z|0-9]+[\s]+(www\.)?[a-z|A-Z|0-9]+\.]?(com|cn|net|org)】'
       - '\[?[\u4e00-\u9fa5a-zA-Z0-9]+电影[a-z]+\.?[a-z|0-9]+\.?(org|com|cn)\]?\.?'
     rename: # 重命名规则（正则）
       - ori: '【[\u4e00-\u9fa5|a-zA-Z|0-9]+[\s]+(www\.)?[[a-z|A-Z|0-9]+\.]?(com|cn|net|org)】'
